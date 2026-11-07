@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tone Proof</title>
+<meta name="description" content="Paste a tweet or sentence and see whether it reads Positive, Negative or Neutral, with the words that decided it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#" aria-label="Tone Proof home"><span class="brand-mark" aria-hidden="true"></span>Tone Proof</a>
+  <nav aria-label="Sections"><a href="#analyze">Analyze</a><a href="#model">Model results</a></nav>
+</header>
+
+<main>
+  <section id="analyze" class="workbench" aria-labelledby="h-analyze">
+    <div class="editor">
+      <h1 id="h-analyze">Does this text sound positive, negative or neutral?</h1>
+      <p class="lede">Paste a tweet or sentence. The model reads it and highlights the words that pushed it toward its verdict.</p>
+
+      <label class="sr" for="input">Text to analyze</label>
+      <textarea id="input" rows="4" maxlength="1000" spellcheck="false" placeholder="Type or paste text here…">The new update is awful. Constant crashes and support never replied to me.</textarea>
+      <div class="bar">
+        <div class="examples" role="group" aria-label="Try an example">
+          <button type="button" class="chip" data-ex="I love this game, the new season is fantastic!">Praise</button>
+          <button type="button" class="chip" data-ex="Worst customer service ever. Still waiting for a refund after three weeks.">Complaint</button>
+          <button type="button" class="chip" data-ex="The package arrived on Tuesday and was delivered to the front desk.">Plain fact</button>
+          <button type="button" class="chip" data-ex="Not bad at all, but I wouldn't say it's great either.">Mixed</button>
+        </div>
+        <span class="count" id="count" aria-live="off">0 / 1000</span>
+        <button id="go" class="primary" type="button">Analyze text</button>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <div id="proof" class="proof" aria-live="polite" hidden>
+        <h2 class="small">Marked-up text</h2>
+        <p id="marked" class="marked"></p>
+        <p class="legend"><span class="key"><i class="swatch"></i> Stronger highlight = word mattered more to the verdict</span></p>
+      </div>
+    </div>
+
+    <aside class="verdict" aria-label="Result">
+      <div id="empty" class="empty">Your result will appear here.</div>
+      <div id="result" hidden>
+        <p class="small">Verdict</p>
+        <p id="label" class="label">—</p>
+        <p class="conf"><span id="conf">0%</span> confident</p>
+        <div class="probs" id="probs"></div>
+      </div>
+      <div class="history">
+        <div class="history-head"><h2 class="small">This session</h2><button id="clear" class="link" type="button" hidden>Clear</button></div>
+        <ol id="history" class="hist-list"></ol>
+        <p id="hist-empty" class="muted">Analyzed texts are listed here. Select one to open it again.</p>
+      </div>
+    </aside>
+  </section>
+
+  <section id="model" class="model" aria-labelledby="h-model">
+    <h2 id="h-model">How well it works</h2>
+    <div class="stats" id="stats"></div>
+    <div class="grid2">
+      <div>
+        <h3>Accuracy by class</h3>
+        <table id="perclass"><thead><tr><th scope="col">Class</th><th scope="col">Precision</th><th scope="col">Recall</th><th scope="col">F1</th></tr></thead><tbody></tbody></table>
+      </div>
+      <div>
+        <h3>Where it gets confused</h3>
+        <div id="cm" class="cm" role="table" aria-label="Confusion matrix"></div>
+        <p class="muted small-note">Rows are the true class, columns are the prediction.</p>
+      </div>
+    </div>
+    <div class="note" id="honest"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Linear SVM on word and character TF-IDF features, trained on the Twitter Entity Sentiment dataset (Positive, Negative, Neutral). Built by Muhammad Zain Tariq.</p>
+</footer>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
